@@ -1,0 +1,56 @@
+# AgroDoc production stack.
+#
+# Usage:
+#   cp backend/.env.example backend/.env   # then edit SECRET_KEY, AI keys, etc.
+#   docker compose up --build -d
+#
+# The frontend is served on :8080 and the API on :8000. Put both behind an
+# HTTPS reverse proxy (Caddy or nginx + Let's Encrypt) for production.
+
+services:
+  db:
+    image: postgis/postgis:16-3.4
+    environment:
+      POSTGRES_USER: agrodoc
+      POSTGRES_PASSWORD: change-me-in-production
+      POSTGRES_DB: agrodoc
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agrodoc"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  backend:
+    build: ./backend
+    environment:
+      ENVIRONMENT: production
+      DEBUG: "false"
+      DATABASE_URL: postgresql+psycopg2://agrodoc:change-me-in-production@db:5432/agrodoc
+      SECRET_KEY: change-me-to-a-long-random-string
+      BACKEND_CORS_ORIGINS: http://localhost:8080
+      # AI_PROVIDER: openai
+      # OPENAI_API_KEY: sk-...
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Point the frontend at the backend (use your public API URL in prod).
+        VITE_API_URL: http://localhost:8000/api
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  pgdata:

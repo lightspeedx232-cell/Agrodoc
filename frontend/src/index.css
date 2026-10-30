@@ -1,0 +1,80 @@
+@import "leaflet/dist/leaflet.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  @apply bg-brand-50 text-brand-900 antialiased;
+  font-family: Inter, system-ui, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Dark theme base */
+.dark body {
+  @apply bg-[#0f1410] text-brand-100;
+}
+
+/* Accessible focus styles */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #248036;
+  outline-offset: 2px;
+}
+
+/* Reusable component classes */
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-brand-600 text-white shadow-sm shadow-brand-600/20 hover:bg-brand-700 hover:shadow-md hover:shadow-brand-600/30 active:scale-[0.98];
+  }
+  .btn-secondary {
+    @apply btn bg-white text-brand-700 border border-brand-200 shadow-sm hover:bg-brand-50 hover:border-brand-300 active:scale-[0.98]
+      dark:bg-[#1c2620] dark:text-brand-100 dark:border-brand-800 dark:hover:bg-[#243029];
+  }
+  .btn-danger {
+    @apply btn bg-red-600 text-white shadow-sm shadow-red-600/20 hover:bg-red-700 active:scale-[0.98];
+  }
+  .card {
+    @apply rounded-2xl border border-brand-100 bg-white shadow-sm transition-all duration-200
+      dark:border-brand-800/40 dark:bg-[#1a241e] dark:shadow-black/20;
+  }
+  .card-hover {
+    @apply card hover:-translate-y-1 hover:shadow-lg hover:shadow-brand-900/5 hover:border-brand-200
+      dark:hover:shadow-black/30 dark:hover:border-brand-700/50;
+  }
+  .input {
+    @apply w-full rounded-lg border border-brand-200 bg-white px-3 py-2 text-sm text-brand-900 placeholder:text-brand-400 transition focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-200
+      dark:border-brand-700/50 dark:bg-[#141c17] dark:text-brand-100 dark:placeholder:text-brand-500 dark:focus:ring-brand-800;
+  }
+  .label {
+    @apply mb-1 block text-sm font-medium text-brand-800 dark:text-brand-200;
+  }
+  .section-title {
+    @apply text-2xl font-bold text-brand-800 dark:text-brand-100;
+  }
+  .icon-badge {
+    @apply flex h-12 w-12 items-center justify-center rounded-xl text-2xl shadow-sm;
+  }
+}
+
+/* Leaflet map sizing helper */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  border-radius: 0.75rem;
+}
